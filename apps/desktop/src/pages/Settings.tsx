@@ -1,71 +1,75 @@
-import { useMemo } from "react";
-import type { JSX, ReactNode } from "react";
-import type { HealthStatus } from "../hooks";
+import { ReactNode, useMemo } from "react";
+
+import { ThemeToggle } from "../components";
+import { useHealthCheck } from "../hooks";
 
 type SectionProps = {
     readonly title: string;
     readonly children: ReactNode;
 };
-
-const Section = ({ title, children }: SectionProps): JSX.Element => {
-    return (
-        <div className="rounded-lg border border-gray-800 bg-gray-900 p-4">
-            <h2 className="mb-4 text-xs font-semibold uppercase tracking-wider text-gray-500">
-                {title}
-            </h2>
-            <div className="space-y-3">{children}</div>
-        </div>
-    );
-};
+const Section = ({ title, children }: SectionProps) =>  (
+    <div
+        className="rounded-lg border p-4"
+        style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border)" }}
+    >
+        <h2
+            className="mb-4 text-xs font-semibold uppercase tracking-wider"
+            style={{ color: "var(--text-muted)" }}
+        >
+            {title}
+        </h2>
+        <div className="space-y-3">{children}</div>
+    </div>
+);
 
 type RowProps = {
     readonly label: string;
     readonly children: ReactNode;
 };
+const Row = ({ label, children }: RowProps) => (
+    <div className="flex items-center justify-between">
+        <span className="text-sm" style={{ color: "var(--text-secondary)" }}>{label}</span>
+        <div>{children}</div>
+    </div>
+);
 
-const Row = ({ label, children }: RowProps): JSX.Element => {
-    return (
-        <div className="flex items-center justify-between">
-            <span className="text-sm text-gray-400">{label}</span>
-            <div>{children}</div>
-        </div>
-    );
-};
+export const SettingsPage = () => {
+	const { status, lastChecked, refresh } = useHealthCheck();
 
-type SettingsPageProps = {
-    readonly healthStatus: HealthStatus;
-    readonly lastChecked: Date | null;
-    readonly onRefresh: () => void;
-};
-
-export const SettingsPage = ({
-    healthStatus,
-    lastChecked,
-    onRefresh,
-}: SettingsPageProps): JSX.Element => {
     const statusConfig = useMemo(
         () =>
             ({
-                connected: { label: "Connected", className: "text-green-400" },
-                disconnected: { label: "Offline", className: "text-red-400" },
-                checking: { label: "Checking…", className: "text-yellow-400" },
-            })[healthStatus],
-        [healthStatus],
+                connected: { label: "Connected", className: "text-green-500" },
+                disconnected: { label: "Offline", className: "text-red-500" },
+                checking: { label: "Checking…", className: "text-yellow-500" },
+            })[status],
+        [status],
     );
 
     return (
         <div className="p-8">
             <div className="mb-6">
-                <h1 className="text-xl font-semibold text-gray-100">Settings</h1>
-                <p className="mt-1 text-sm text-gray-500">
+                <h1 className="text-xl font-semibold" style={{ color: "var(--text-primary)" }}>
+                    Settings
+                </h1>
+                <p className="mt-1 text-sm" style={{ color: "var(--text-muted)" }}>
                     Application configuration and connection status.
                 </p>
             </div>
 
             <div className="max-w-lg space-y-6">
+                <Section title="Appearance">
+                    <Row label="Theme">
+                        <ThemeToggle />
+                    </Row>
+                </Section>
+
                 <Section title="Backend API">
                     <Row label="URL">
-                        <code className="text-xs text-gray-300 bg-gray-800 px-2 py-1 rounded">
+                        <code
+                            className="text-xs px-2 py-1 rounded"
+                            style={{ backgroundColor: "var(--bg-subtle)", color: "var(--text-subtle)" }}
+                        >
                             http://127.0.0.1:3001
                         </code>
                     </Row>
@@ -77,15 +81,22 @@ export const SettingsPage = ({
                     </Row>
 
                     <Row label="Last checked">
-                        <span className="text-sm text-gray-400">
+                        <span className="text-sm" style={{ color: "var(--text-secondary)" }}>
                             {lastChecked ? lastChecked.toLocaleTimeString() : "—"}
                         </span>
                     </Row>
 
                     <div className="pt-2">
                         <button
-                            onClick={onRefresh}
-                            className="rounded-md bg-gray-800 px-3 py-1.5 text-xs text-gray-200 hover:bg-gray-700 transition-colors"
+                            onClick={refresh}
+                            className="rounded-md px-3 py-1.5 text-xs transition-colors"
+                            style={{ backgroundColor: "var(--bg-subtle)", color: "var(--text-primary)" }}
+                            onMouseEnter={(e) => {
+                                e.currentTarget.style.backgroundColor = "var(--bg-hover-subtle)";
+                            }}
+                            onMouseLeave={(e) => {
+                                e.currentTarget.style.backgroundColor = "var(--bg-subtle)";
+                            }}
                         >
                             Refresh now
                         </button>
@@ -94,7 +105,7 @@ export const SettingsPage = ({
 
                 <Section title="Application">
                     <Row label="Version">
-                        <span className="text-sm text-gray-400">0.0.1</span>
+                        <span className="text-sm" style={{ color: "var(--text-secondary)" }}>0.0.1</span>
                     </Row>
                 </Section>
             </div>
