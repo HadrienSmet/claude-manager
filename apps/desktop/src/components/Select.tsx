@@ -12,7 +12,7 @@ export type SelectProps<T extends string = string> = {
     readonly onChange: (value: T) => void;
 };
 
-export function Select<T extends string>({ value, options, onChange }: SelectProps<T>) {
+export const Select = <T extends string>({ value, options, onChange }: SelectProps<T>) => {
     const [open, setOpen] = useState(false);
     const containerRef = useRef<HTMLDivElement>(null);
 
@@ -86,4 +86,4 @@ export function Select<T extends string>({ value, options, onChange }: SelectPro
             </div>
         </div>
     );
-}
+};
