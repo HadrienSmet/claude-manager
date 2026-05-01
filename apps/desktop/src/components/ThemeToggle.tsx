@@ -1,4 +1,5 @@
 import { PiMoon, PiSun } from "react-icons/pi";
+import { useTranslation } from "react-i18next";
 
 import { THEME, useTheme } from "../contexts";
 
@@ -9,12 +10,13 @@ const ICON_SIZE = 16 as const;
 
 export const ThemeToggle = () => {
     const { theme, toggleTheme } = useTheme();
+    const { t } = useTranslation();
     const isDark = theme === THEME.dark;
 
     return (
         <button
             onClick={toggleTheme}
-            aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
+            aria-label={isDark ? t("theme.ariaLight") : t("theme.ariaDark")}
             className="relative inline-flex shrink-0 items-center rounded-full"
             style={{
                 width: TOGGLE_WIDTH,
@@ -23,7 +25,7 @@ export const ThemeToggle = () => {
                 backgroundColor: "var(--bg-subtle)",
             }}
         >
-            {/* Sun icon — opposite side when dark, indicating light is available */}
+            {/* Sun icon — opposite side when dark */}
             <PiSun
                 size={ICON_SIZE - 2}
                 className="absolute"
@@ -35,7 +37,7 @@ export const ThemeToggle = () => {
                 }}
             />
 
-            {/* Moon icon — opposite side when light, indicating dark is available */}
+            {/* Moon icon — opposite side when light */}
             <PiMoon
                 size={ICON_SIZE - 2}
                 className="absolute"
@@ -51,8 +53,8 @@ export const ThemeToggle = () => {
             <span
                 className="relative z-10 flex items-center justify-center rounded-full"
                 style={{
-                    width: TOGGLE_HEIGHT - (TOGGLE_PADDING * 2),
-                    height: TOGGLE_HEIGHT - (TOGGLE_PADDING * 2),
+                    width: TOGGLE_HEIGHT - TOGGLE_PADDING * 2,
+                    height: TOGGLE_HEIGHT - TOGGLE_PADDING * 2,
                     backgroundColor: "var(--bg-surface)",
                     color: "var(--text-primary)",
                     boxShadow: "0 1px 4px rgba(0,0,0,0.25)",

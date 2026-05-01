@@ -6,7 +6,8 @@
       "Bash(Get-ChildItem -Path \"c:\\\\Users\\\\User\\\\Desktop\\\\Hadrien\\\\Code\\\\claude-manager\\\\apps\\\\desktop\\\\src\\\\\" -Recurse -Force | Select-Object -Property FullName | head -100)",
       "PowerShell(head -100)",
       "Bash(pnpm run *)",
-      "Bash(pnpm -w run lint)"
+      "Bash(pnpm -w run lint)",
+      "Bash(Get-ChildItem -Path \"c:\\\\Users\\\\User\\\\Desktop\\\\Hadrien\\\\Code\\\\claude-manager\\\\apps\\\\desktop\\\\src\\\\contexts\" -Force)"
     ]
   }
 }

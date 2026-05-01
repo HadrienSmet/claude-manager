@@ -1,13 +1,16 @@
-import { ReactNode, useMemo } from "react";
+import { useMemo } from "react";
+import type { ReactNode } from "react";
+import { useTranslation } from "react-i18next";
 
-import { ThemeToggle } from "../components";
+import { LanguageSelect, ThemeToggle } from "../components";
 import { useHealthCheck } from "../hooks";
 
 type SectionProps = {
     readonly title: string;
     readonly children: ReactNode;
 };
-const Section = ({ title, children }: SectionProps) =>  (
+
+const Section = ({ title, children }: SectionProps) => (
     <div
         className="rounded-lg border p-4"
         style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border)" }}
@@ -26,6 +29,7 @@ type RowProps = {
     readonly label: string;
     readonly children: ReactNode;
 };
+
 const Row = ({ label, children }: RowProps) => (
     <div className="flex items-center justify-between">
         <span className="text-sm" style={{ color: "var(--text-secondary)" }}>{label}</span>
@@ -34,38 +38,41 @@ const Row = ({ label, children }: RowProps) => (
 );
 
 export const SettingsPage = () => {
-	const { status, lastChecked, refresh } = useHealthCheck();
+    const { t } = useTranslation();
+    const { status, lastChecked, refresh } = useHealthCheck();
 
     const statusConfig = useMemo(
-        () =>
-            ({
-                connected: { label: "Connected", className: "text-green-500" },
-                disconnected: { label: "Offline", className: "text-red-500" },
-                checking: { label: "Checking…", className: "text-yellow-500" },
-            })[status],
-        [status],
+        () => ({
+            connected: { label: t("settings.backend.status.connected"), className: "text-green-500" },
+            disconnected: { label: t("settings.backend.status.disconnected"), className: "text-red-500" },
+            checking: { label: t("settings.backend.status.checking"), className: "text-yellow-500" },
+        })[status],
+        [status, t],
     );
 
     return (
         <div className="p-8">
             <div className="mb-6">
                 <h1 className="text-xl font-semibold" style={{ color: "var(--text-primary)" }}>
-                    Settings
+                    {t("settings.title")}
                 </h1>
                 <p className="mt-1 text-sm" style={{ color: "var(--text-muted)" }}>
-                    Application configuration and connection status.
+                    {t("settings.description")}
                 </p>
             </div>
 
             <div className="max-w-lg space-y-6">
-                <Section title="Appearance">
-                    <Row label="Theme">
+                <Section title={t("settings.appearance.title")}>
+                    <Row label={t("settings.appearance.theme")}>
                         <ThemeToggle />
+                    </Row>
+                    <Row label={t("settings.appearance.language")}>
+                        <LanguageSelect />
                     </Row>
                 </Section>
 
-                <Section title="Backend API">
-                    <Row label="URL">
+                <Section title={t("settings.backend.title")}>
+                    <Row label={t("settings.backend.url")}>
                         <code
                             className="text-xs px-2 py-1 rounded"
                             style={{ backgroundColor: "var(--bg-subtle)", color: "var(--text-subtle)" }}
@@ -74,13 +81,13 @@ export const SettingsPage = () => {
                         </code>
                     </Row>
 
-                    <Row label="Status">
+                    <Row label={t("settings.backend.status.label")}>
                         <span className={`text-sm font-medium ${statusConfig.className}`}>
                             {statusConfig.label}
                         </span>
                     </Row>
 
-                    <Row label="Last checked">
+                    <Row label={t("settings.backend.lastChecked")}>
                         <span className="text-sm" style={{ color: "var(--text-secondary)" }}>
                             {lastChecked ? lastChecked.toLocaleTimeString() : "—"}
                         </span>
@@ -91,20 +98,16 @@ export const SettingsPage = () => {
                             onClick={refresh}
                             className="rounded-md px-3 py-1.5 text-xs transition-colors"
                             style={{ backgroundColor: "var(--bg-subtle)", color: "var(--text-primary)" }}
-                            onMouseEnter={(e) => {
-                                e.currentTarget.style.backgroundColor = "var(--bg-hover-subtle)";
-                            }}
-                            onMouseLeave={(e) => {
-                                e.currentTarget.style.backgroundColor = "var(--bg-subtle)";
-                            }}
+                            onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = "var(--bg-hover-subtle)"; }}
+                            onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = "var(--bg-subtle)"; }}
                         >
-                            Refresh now
+                            {t("settings.backend.refresh")}
                         </button>
                     </div>
                 </Section>
 
-                <Section title="Application">
-                    <Row label="Version">
+                <Section title={t("settings.application.title")}>
+                    <Row label={t("settings.application.version")}>
                         <span className="text-sm" style={{ color: "var(--text-secondary)" }}>0.0.1</span>
                     </Row>
                 </Section>
