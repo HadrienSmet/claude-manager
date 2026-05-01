@@ -1,0 +1,29 @@
+{
+  "name": "claude-manager",
+  "version": "0.0.1",
+  "private": true,
+  "engines": {
+    "node": ">=20",
+    "pnpm": ">=9"
+  },
+  "scripts": {
+    "dev": "pnpm --parallel --filter './apps/*' dev",
+    "dev:api": "pnpm --filter @claude-manager/api dev",
+    "dev:desktop": "pnpm --filter @claude-manager/desktop dev",
+    "build": "pnpm -r --filter './packages/*' build && pnpm -r --filter './apps/*' build",
+    "build:api": "pnpm --filter @claude-manager/api build",
+    "build:desktop": "pnpm --filter @claude-manager/desktop build",
+    "typecheck": "pnpm -r typecheck",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^8.32.0",
+    "@typescript-eslint/parser": "^8.32.0",
+    "eslint": "^9.26.0",
+    "eslint-config-prettier": "^10.1.5",
+    "prettier": "^3.5.3",
+    "typescript": "^5.8.3"
+  }
+}

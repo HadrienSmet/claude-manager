@@ -1,0 +1,17 @@
+node_modules
+dist
+build
+.turbo
+*.tsbuildinfo
+
+# Tauri
+src-tauri/target
+
+# Local data
+*.db
+*.db-journal
+data/
+
+# Env
+.env
+.env.local

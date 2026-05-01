@@ -1,0 +1,12 @@
+{
+  "files": [],
+  "references": [
+    { "path": "./packages/shared" },
+    { "path": "./packages/core" },
+    { "path": "./packages/git-layer" },
+    { "path": "./packages/command-runner" },
+    { "path": "./packages/file-system" },
+    { "path": "./packages/agent-runtime" },
+    { "path": "./apps/api" }
+  ]
+}
