@@ -1,6 +1,7 @@
 import type { JSX, ReactNode } from "react";
 import { PiFolders, PiGear, PiRobot } from "react-icons/pi";
 
+import { THEME, useTheme } from "../contexts";
 import type { HealthStatus } from "../hooks";
 
 import { ThemeToggle } from "./ThemeToggle";
@@ -50,6 +51,9 @@ type SidebarProps = {
     readonly healthStatus: HealthStatus;
 };
 export const Sidebar = ({ currentPage, onNavigate, healthStatus }: SidebarProps): JSX.Element => {
+    const { theme } = useTheme();
+    const isDark = theme === THEME.dark;
+
     return (
         <aside
             className="flex h-screen w-56 flex-col border-r"
@@ -97,9 +101,12 @@ export const Sidebar = ({ currentPage, onNavigate, healthStatus }: SidebarProps)
                 ))}
             </nav>
 
-			<div className="mb-2">
-				<ThemeToggle />
-			</div>
+			<div className="mb-2 mx-2 flex items-center justify-between rounded-md px-3 py-2">
+                <span className="text-sm" style={{ color: "var(--text-secondary)" }}>
+                    {isDark ? "Dark mode" : "Light mode"}
+                </span>
+                <ThemeToggle />
+            </div>
 
             <div
                 className="border-t px-2 py-3 space-y-2"

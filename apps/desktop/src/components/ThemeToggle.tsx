@@ -2,25 +2,66 @@ import { PiMoon, PiSun } from "react-icons/pi";
 
 import { THEME, useTheme } from "../contexts";
 
+const TOGGLE_WIDTH = 70 as const;
+const TOGGLE_HEIGHT = 32 as const;
+const TOGGLE_PADDING = 2 as const;
+const ICON_SIZE = 16 as const;
+
 export const ThemeToggle = () => {
-	const { theme, toggleTheme } = useTheme();
+    const { theme, toggleTheme } = useTheme();
+    const isDark = theme === THEME.dark;
 
     return (
         <button
             onClick={toggleTheme}
-            className="w-full flex items-center gap-3 rounded-md px-3 py-2 text-sm transition-colors text-left"
-            style={{ color: "var(--text-secondary)" }}
-            onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = "var(--bg-hover)";
-                e.currentTarget.style.color = "var(--text-primary)";
-            }}
-            onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = "";
-                e.currentTarget.style.color = "var(--text-secondary)";
+            aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
+            className="relative inline-flex shrink-0 items-center rounded-full"
+            style={{
+                width: TOGGLE_WIDTH,
+                height: TOGGLE_HEIGHT,
+                padding: TOGGLE_PADDING,
+                backgroundColor: "var(--bg-subtle)",
             }}
         >
-            <span>{theme === THEME.dark ? <PiSun /> : <PiMoon />}</span>
-            <span>{theme === THEME.dark ? "Light mode" : "Dark mode"}</span>
+            {/* Sun icon — opposite side when dark, indicating light is available */}
+            <PiSun
+                size={ICON_SIZE - 2}
+                className="absolute"
+                style={{
+                    left: (TOGGLE_HEIGHT - ICON_SIZE) / 2,
+                    color: "var(--text-muted)",
+                    opacity: isDark ? 1 : 0,
+                    transition: "opacity 0.2s ease",
+                }}
+            />
+
+            {/* Moon icon — opposite side when light, indicating dark is available */}
+            <PiMoon
+                size={ICON_SIZE - 2}
+                className="absolute"
+                style={{
+                    right: (TOGGLE_HEIGHT - TOGGLE_PADDING - ICON_SIZE) / 2,
+                    color: "var(--text-muted)",
+                    opacity: isDark ? 0 : 1,
+                    transition: "opacity 0.2s ease",
+                }}
+            />
+
+            {/* Sliding knob with active-theme icon */}
+            <span
+                className="relative z-10 flex items-center justify-center rounded-full"
+                style={{
+                    width: TOGGLE_HEIGHT - (TOGGLE_PADDING * 2),
+                    height: TOGGLE_HEIGHT - (TOGGLE_PADDING * 2),
+                    backgroundColor: "var(--bg-surface)",
+                    color: "var(--text-primary)",
+                    boxShadow: "0 1px 4px rgba(0,0,0,0.25)",
+                    transform: isDark ? `translateX(${TOGGLE_WIDTH - TOGGLE_HEIGHT}px)` : "translateX(0)",
+                    transition: "transform 0.2s ease",
+                }}
+            >
+                {isDark ? <PiMoon size={ICON_SIZE} /> : <PiSun size={ICON_SIZE} />}
+            </span>
         </button>
     );
 };
