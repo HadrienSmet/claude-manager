@@ -8,11 +8,18 @@ export type GitStatus = {
     readonly clean: boolean;
 };
 
+export const CHANGE_TYPE = {
+	added: "added",
+	modified: "modified",
+	deleted: "deleted",
+	renamed: "renamed",
+} as const;
+type ChangeType = typeof CHANGE_TYPE[keyof typeof CHANGE_TYPE];
 export type GitDiffFile = {
     readonly path: string;
     readonly additions: number;
     readonly deletions: number;
-    readonly changeType: "added" | "modified" | "deleted" | "renamed";
+    readonly changeType: ChangeType;
 };
 
 export type GitDiff = {

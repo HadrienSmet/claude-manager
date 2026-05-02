@@ -2,11 +2,7 @@ import type { JSX, ReactNode } from "react";
 import { PiFolders, PiGear, PiRobot } from "react-icons/pi";
 import { useTranslation } from "react-i18next";
 
-import { THEME, useTheme } from "../contexts";
 import type { HealthStatus } from "../hooks";
-
-import { LanguageSelect } from "./LanguageSelect";
-import { ThemeToggle } from "./ThemeToggle";
 
 export const PAGE = {
     REPO: "repositories",
@@ -55,8 +51,6 @@ type SidebarProps = {
 
 export const Sidebar = ({ currentPage, onNavigate, healthStatus }: SidebarProps): JSX.Element => {
     const { t } = useTranslation();
-    const { theme } = useTheme();
-    const isDark = theme === THEME.dark;
 
     return (
         <aside
@@ -98,22 +92,6 @@ export const Sidebar = ({ currentPage, onNavigate, healthStatus }: SidebarProps)
                     </button>
                 ))}
             </nav>
-
-            <div className="px-2 pb-2 space-y-1">
-                <div className="flex items-center justify-between rounded-md px-3 py-2">
-                    <span className="text-sm" style={{ color: "var(--text-secondary)" }}>
-                        {isDark ? t("sidebar.theme.dark") : t("sidebar.theme.light")}
-                    </span>
-                    <ThemeToggle />
-                </div>
-
-                <div className="flex items-center justify-between rounded-md px-3 py-2">
-                    <span className="text-sm" style={{ color: "var(--text-secondary)" }}>
-                        {t("sidebar.language.label")}
-                    </span>
-                    <LanguageSelect />
-                </div>
-            </div>
 
             <div className="border-t px-2 py-3" style={{ borderColor: "var(--border)" }}>
                 <div className="px-3">

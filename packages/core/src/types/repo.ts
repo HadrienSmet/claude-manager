@@ -3,4 +3,5 @@ export type Repo = {
     readonly name: string;
     readonly path: string;
     readonly currentBranch?: string;
+    readonly createdAt: string;
 };

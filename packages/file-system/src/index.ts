@@ -1,3 +1,6 @@
+export * from "./errors.js";
+export * from "./repo-fs.js";
+
 import { readFile, writeFile, mkdir, readdir, stat } from "node:fs/promises";
 import { join } from "node:path";
 import type { Result } from "@claude-manager/shared";
