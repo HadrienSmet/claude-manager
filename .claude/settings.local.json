@@ -11,7 +11,11 @@
       "Bash(Get-ChildItem -Path \"c:\\\\Users\\\\User\\\\Desktop\\\\Hadrien\\\\Code\\\\claude-manager\\\\packages\\\\git-layer\" -Recurse -Force)",
       "Bash(Select-Object -Property FullName, PSIsContainer)",
       "Bash(ConvertTo-Json)",
-      "Bash(pnpm test *)"
+      "Bash(pnpm test *)",
+      "Bash(pnpm --filter @claude-manager/file-system run build)",
+      "Bash(pnpm --filter @claude-manager/agent-runtime run typecheck)",
+      "Skill(claude-api)",
+      "Skill(claude-api:*)"
     ]
   }
 }

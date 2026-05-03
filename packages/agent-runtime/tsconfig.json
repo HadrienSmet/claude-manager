@@ -11,6 +11,7 @@
     { "path": "../shared" },
     { "path": "../core" },
     { "path": "../command-runner" },
+    { "path": "../file-system" },
     { "path": "../git-layer" }
   ]
 }
