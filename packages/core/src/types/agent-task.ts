@@ -1,20 +1,8 @@
-export const AGENT_TASK_STATUS = {
-	draft: "draft",
+export const TASK_STATUS = {
+	pending: "pending",
 	running: "running",
 	waiting_approval: "waiting_approval",
 	completed: "completed",
-	failed: "failed",
-	cancelled: "cancelled",
+	rejected: "rejected",
 } as const;
-export type AgentTaskStatus = typeof AGENT_TASK_STATUS[keyof typeof AGENT_TASK_STATUS];
-
-export type AgentTask = {
-    readonly id: string;
-    readonly repoId: string;
-    readonly title: string;
-    readonly prompt: string;
-    readonly branchName: string;
-    readonly status: AgentTaskStatus;
-    readonly createdAt: string;
-    readonly updatedAt: string;
-};
+export type TaskStatus = typeof TASK_STATUS[keyof typeof TASK_STATUS];

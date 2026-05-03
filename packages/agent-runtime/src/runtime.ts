@@ -1,6 +1,6 @@
 import { readFile, writeFile } from "@claude-manager/file-system";
-import type { Result } from "@claude-manager/shared";
-import { ok, err } from "@claude-manager/shared";
+import { ok, err, Result } from "@claude-manager/shared";
+
 import { AGENT_RUNTIME_ERROR_CODE, AgentRuntimeError } from "./errors.js";
 import { parseAgentResponse } from "./response-parser.js";
 import type { AgentRunInput, AgentRunResult } from "./types.js";

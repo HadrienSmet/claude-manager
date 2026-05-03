@@ -66,6 +66,9 @@ importers:
 
   apps/desktop:
     dependencies:
+      '@claude-manager/core':
+        specifier: workspace:*
+        version: link:../../packages/core
       '@claude-manager/shared':
         specifier: workspace:*
         version: link:../../packages/shared

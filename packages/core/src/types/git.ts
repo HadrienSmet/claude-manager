@@ -14,7 +14,7 @@ export const CHANGE_TYPE = {
 	deleted: "deleted",
 	renamed: "renamed",
 } as const;
-type ChangeType = typeof CHANGE_TYPE[keyof typeof CHANGE_TYPE];
+export type ChangeType = typeof CHANGE_TYPE[keyof typeof CHANGE_TYPE];
 export type GitDiffFile = {
     readonly path: string;
     readonly additions: number;
