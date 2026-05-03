@@ -41,6 +41,8 @@ const en = {
             promptPlaceholder: "Describe what the agent should implement…",
             createButton: "Create task",
             creating: "Creating…",
+            refreshRepos: "Refresh",
+            taskRunning: "A task is currently running — wait for it to finish before creating a new one.",
         },
         status: {
             pending: "Pending",
@@ -63,6 +65,10 @@ const en = {
             rejectButton: "Reject",
             rejecting: "Rejecting…",
             commitHash: "Commit",
+            confirmCommitTitle: "Confirm commit?",
+            confirmCommitHint: "This will create a git commit on the agent branch.",
+            confirmCommitYes: "Confirm",
+            confirmCommitCancel: "Cancel",
         },
         errors: {
             create: "Failed to create task",
@@ -96,6 +102,17 @@ const en = {
             },
             lastChecked: "Last checked",
             refresh: "Refresh now",
+        },
+        agent: {
+            title: "Agent",
+            provider: "Provider",
+            model: "Model",
+            providerFake: "Fake (development)",
+            providerAnthropic: "Anthropic",
+            noModel: "—",
+            apiKeySafe: "The API key is never sent to the client",
+            loading: "Loading agent settings…",
+            error: "Could not load agent settings",
         },
         application: {
             title: "Application",

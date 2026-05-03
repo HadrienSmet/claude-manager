@@ -1,5 +1,6 @@
 import type { JSX, FormEvent } from "react";
 import { useTranslation } from "react-i18next";
+import { PiArrowsClockwise } from "react-icons/pi";
 
 import type { Repo } from "../../api";
 import { ErrorBanner } from "../../components";
@@ -13,7 +14,9 @@ type Props = {
     readonly onPromptChange: (prompt: string) => void;
     readonly creating: boolean;
     readonly formError: string | null;
+    readonly isTaskRunning: boolean;
     readonly onSubmit: (e: FormEvent) => void;
+    readonly onRefreshRepos: () => void;
 };
 
 export const TaskCreateForm = ({
@@ -25,7 +28,9 @@ export const TaskCreateForm = ({
     onPromptChange,
     creating,
     formError,
+    isTaskRunning,
     onSubmit,
+    onRefreshRepos,
 }: Props): JSX.Element => {
     const { t } = useTranslation();
 
@@ -40,12 +45,24 @@ export const TaskCreateForm = ({
             </h2>
 
             <div>
-                <label
-                    className="block text-xs font-medium mb-1.5"
-                    style={{ color: "var(--text-secondary)" }}
-                >
-                    {t("agentTask.form.repoLabel")}
-                </label>
+                <div className="flex items-center justify-between mb-1.5">
+                    <label
+                        className="text-xs font-medium"
+                        style={{ color: "var(--text-secondary)" }}
+                    >
+                        {t("agentTask.form.repoLabel")}
+                    </label>
+                    <button
+                        type="button"
+                        onClick={onRefreshRepos}
+                        disabled={reposLoading}
+                        className="flex items-center gap-1 text-xs disabled:opacity-40"
+                        style={{ color: "var(--text-muted)" }}
+                    >
+                        <PiArrowsClockwise size={12} className={reposLoading ? "animate-spin" : ""} />
+                        {t("agentTask.form.refreshRepos")}
+                    </button>
+                </div>
                 {reposLoading ? (
                     <p className="text-xs" style={{ color: "var(--text-muted)" }}>
                         {t("agentTask.loadingRepos")}
@@ -95,12 +112,18 @@ export const TaskCreateForm = ({
                 />
             </div>
 
+            {isTaskRunning && (
+                <p className="text-xs" style={{ color: "var(--text-muted)" }}>
+                    {t("agentTask.form.taskRunning")}
+                </p>
+            )}
+
             {formError !== null && <ErrorBanner message={formError} />}
 
             <div className="flex justify-end">
                 <button
                     type="submit"
-                    disabled={creating || !selectedRepoId || !prompt.trim()}
+                    disabled={creating || !selectedRepoId || !prompt.trim() || isTaskRunning}
                     className="px-4 py-2 text-sm font-medium rounded-md bg-violet-600 text-white hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                     {creating ? t("agentTask.form.creating") : t("agentTask.form.createButton")}

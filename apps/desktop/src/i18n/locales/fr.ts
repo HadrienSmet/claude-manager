@@ -43,6 +43,8 @@ const fr: typeof en = {
             promptPlaceholder: "Décrivez ce que l'agent doit implémenter…",
             createButton: "Créer la tâche",
             creating: "Création…",
+            refreshRepos: "Actualiser",
+            taskRunning: "Une tâche est en cours — attendez qu'elle se termine avant d'en créer une nouvelle.",
         },
         status: {
             pending: "En attente",
@@ -65,6 +67,10 @@ const fr: typeof en = {
             rejectButton: "Rejeter",
             rejecting: "Rejet…",
             commitHash: "Commit",
+            confirmCommitTitle: "Confirmer le commit ?",
+            confirmCommitHint: "Un commit git sera créé sur la branche de la tâche.",
+            confirmCommitYes: "Confirmer",
+            confirmCommitCancel: "Annuler",
         },
         errors: {
             create: "Impossible de créer la tâche",
@@ -98,6 +104,17 @@ const fr: typeof en = {
             },
             lastChecked: "Dernière vérification",
             refresh: "Actualiser",
+        },
+        agent: {
+            title: "Agent",
+            provider: "Provider",
+            model: "Modèle",
+            providerFake: "Fake (développement)",
+            providerAnthropic: "Anthropic",
+            noModel: "—",
+            apiKeySafe: "La clé API n'est jamais envoyée au client",
+            loading: "Chargement de la configuration agent…",
+            error: "Impossible de charger la configuration agent",
         },
         application: {
             title: "Application",

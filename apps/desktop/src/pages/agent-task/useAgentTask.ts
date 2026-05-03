@@ -4,16 +4,16 @@ import { useTranslation } from "react-i18next";
 
 import { TASK_STATUS } from "@claude-manager/core";
 
-import { 
-	commitTask, 
-	createTask, 
-	listRepos, 
-	listTasks, 
-	rejectTask, 
-	runTask, 
-	AgentTask, 
-	ApiError, 
-	Repo,
+import {
+    commitTask,
+    createTask,
+    listRepos,
+    listTasks,
+    rejectTask,
+    runTask,
+    AgentTask,
+    ApiError,
+    Repo,
 } from "../../api";
 
 export type AgentTaskHook = {
@@ -31,10 +31,14 @@ export type AgentTaskHook = {
     readonly canRun: boolean;
     readonly canCommit: boolean;
     readonly canReject: boolean;
+    readonly isTaskRunning: boolean;
+    readonly confirmingCommit: boolean;
     readonly handleCreate: (e: FormEvent) => Promise<void>;
     readonly handleRun: () => Promise<void>;
     readonly handleCommit: () => Promise<void>;
+    readonly handleCancelCommit: () => void;
     readonly handleReject: () => Promise<void>;
+    readonly handleRefreshRepos: () => Promise<void>;
 };
 
 export const useAgentTask = (): AgentTaskHook => {
@@ -49,6 +53,7 @@ export const useAgentTask = (): AgentTaskHook => {
     const [task, setTask] = useState<AgentTask | null>(null);
     const [actionLoading, setActionLoading] = useState(false);
     const [actionError, setActionError] = useState<string | null>(null);
+    const [confirmingCommit, setConfirmingCommit] = useState(false);
 
     useEffect(() => {
         let alive = true;
@@ -82,8 +87,29 @@ export const useAgentTask = (): AgentTaskHook => {
         };
     }, []);
 
+    // Reset confirmation when the displayed task changes
+    useEffect(() => {
+        setConfirmingCommit(false);
+    }, [task?.id]);
+
+    const handleRefreshRepos = async (): Promise<void> => {
+        setReposLoading(true);
+        try {
+            const data = await listRepos();
+            setRepos(data);
+            if (data.length > 0 && !data.some((r) => r.id === selectedRepoId)) {
+                setSelectedRepoId(data[0]!.id);
+            }
+        } catch {
+            // keep current list on error
+        } finally {
+            setReposLoading(false);
+        }
+    };
+
     const handleCreate = async (e: FormEvent): Promise<void> => {
         e.preventDefault();
+        if (task !== null && task.status === TASK_STATUS.running) return;
         if (!selectedRepoId || !prompt.trim()) return;
         setCreating(true);
         setFormError(null);
@@ -114,6 +140,11 @@ export const useAgentTask = (): AgentTaskHook => {
 
     const handleCommit = async (): Promise<void> => {
         if (task === null) return;
+        if (!confirmingCommit) {
+            setConfirmingCommit(true);
+            return;
+        }
+        setConfirmingCommit(false);
         setActionLoading(true);
         setActionError(null);
         try {
@@ -124,6 +155,8 @@ export const useAgentTask = (): AgentTaskHook => {
             setActionLoading(false);
         }
     };
+
+    const handleCancelCommit = () => setConfirmingCommit(false);
 
     const handleReject = async (): Promise<void> => {
         if (task === null) return;
@@ -138,6 +171,7 @@ export const useAgentTask = (): AgentTaskHook => {
         }
     };
 
+    const isTaskRunning = task !== null && task.status === TASK_STATUS.running;
     const canRun =
         task !== null && !actionLoading && (task.status === TASK_STATUS.pending || task.status === TASK_STATUS.rejected);
     const canCommit = task !== null && !actionLoading && task.status === TASK_STATUS.waiting_approval;
@@ -158,9 +192,13 @@ export const useAgentTask = (): AgentTaskHook => {
         canRun,
         canCommit,
         canReject,
+        isTaskRunning,
+        confirmingCommit,
         handleCreate,
         handleRun,
         handleCommit,
+        handleCancelCommit,
         handleReject,
+        handleRefreshRepos,
     };
 };

@@ -23,10 +23,14 @@ export const AgentTaskPage = (): JSX.Element => {
         canRun,
         canCommit,
         canReject,
+        isTaskRunning,
+        confirmingCommit,
         handleCreate,
         handleRun,
         handleCommit,
+        handleCancelCommit,
         handleReject,
+        handleRefreshRepos,
     } = useAgentTask();
 
     return (
@@ -49,7 +53,9 @@ export const AgentTaskPage = (): JSX.Element => {
                 onPromptChange={setPrompt}
                 creating={creating}
                 formError={formError}
+                isTaskRunning={isTaskRunning}
                 onSubmit={(e) => { void handleCreate(e); }}
+                onRefreshRepos={() => { void handleRefreshRepos(); }}
             />
 
             {task !== null ? (
@@ -60,8 +66,10 @@ export const AgentTaskPage = (): JSX.Element => {
                     canRun={canRun}
                     canCommit={canCommit}
                     canReject={canReject}
+                    confirmingCommit={confirmingCommit}
                     onRun={() => { void handleRun(); }}
                     onCommit={() => { void handleCommit(); }}
+                    onCancelCommit={handleCancelCommit}
                     onReject={() => { void handleReject(); }}
                 />
             ) : (

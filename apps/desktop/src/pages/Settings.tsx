@@ -1,7 +1,9 @@
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import type { ReactNode } from "react";
 import { useTranslation } from "react-i18next";
+import { PiShieldCheck } from "react-icons/pi";
 
+import { getPublicSettings, type PublicSettings } from "../api";
 import { LanguageSelect, ThemeToggle } from "../components";
 import { useHealthCheck } from "../hooks";
 
@@ -37,9 +39,26 @@ const Row = ({ label, children }: RowProps) => (
     </div>
 );
 
+const useAgentSettings = () => {
+    const [settings, setSettings] = useState<PublicSettings | null>(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
+
+    useEffect(() => {
+        let alive = true;
+        getPublicSettings()
+            .then((s) => { if (alive) { setSettings(s); setLoading(false); } })
+            .catch(() => { if (alive) { setError("error"); setLoading(false); } });
+        return () => { alive = false; };
+    }, []);
+
+    return { settings, loading, error };
+};
+
 export const SettingsPage = () => {
     const { t } = useTranslation();
     const { status, lastChecked, refresh } = useHealthCheck();
+    const { settings, loading: agentLoading, error: agentError } = useAgentSettings();
 
     const statusConfig = useMemo(
         () => ({
@@ -49,6 +68,11 @@ export const SettingsPage = () => {
         })[status],
         [status, t],
     );
+
+    const providerLabel =
+        settings?.agentProvider === "anthropic"
+            ? t("settings.agent.providerAnthropic")
+            : t("settings.agent.providerFake");
 
     return (
         <div className="p-8">
@@ -104,6 +128,42 @@ export const SettingsPage = () => {
                             {t("settings.backend.refresh")}
                         </button>
                     </div>
+                </Section>
+
+                <Section title={t("settings.agent.title")}>
+                    {agentLoading ? (
+                        <p className="text-xs" style={{ color: "var(--text-muted)" }}>
+                            {t("settings.agent.loading")}
+                        </p>
+                    ) : agentError !== null ? (
+                        <p className="text-xs" style={{ color: "var(--text-muted)" }}>
+                            {t("settings.agent.error")}
+                        </p>
+                    ) : (
+                        <>
+                            <Row label={t("settings.agent.provider")}>
+                                <span className="text-sm font-medium" style={{ color: "var(--text-primary)" }}>
+                                    {providerLabel}
+                                </span>
+                            </Row>
+
+                            <Row label={t("settings.agent.model")}>
+                                <span className="text-sm" style={{ color: "var(--text-secondary)" }}>
+                                    {settings?.anthropicModel ?? t("settings.agent.noModel")}
+                                </span>
+                            </Row>
+
+                            <div
+                                className="flex items-center gap-2 rounded-md px-3 py-2 mt-1"
+                                style={{ backgroundColor: "var(--bg-subtle)" }}
+                            >
+                                <PiShieldCheck size={14} style={{ color: "var(--text-muted)", flexShrink: 0 }} />
+                                <p className="text-xs" style={{ color: "var(--text-muted)" }}>
+                                    {t("settings.agent.apiKeySafe")}
+                                </p>
+                            </div>
+                        </>
+                    )}
                 </Section>
 
                 <Section title={t("settings.application.title")}>

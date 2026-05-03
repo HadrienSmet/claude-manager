@@ -1,5 +1,6 @@
 import type { JSX } from "react";
 import { useTranslation } from "react-i18next";
+import { PiGitBranch } from "react-icons/pi";
 
 import type { AgentTask } from "../../api";
 import { ErrorBanner } from "../../components";
@@ -24,8 +25,10 @@ type Props = {
     readonly canRun: boolean;
     readonly canCommit: boolean;
     readonly canReject: boolean;
+    readonly confirmingCommit: boolean;
     readonly onRun: () => void;
     readonly onCommit: () => void;
+    readonly onCancelCommit: () => void;
     readonly onReject: () => void;
 };
 
@@ -36,8 +39,10 @@ export const TaskPanel = ({
     canRun,
     canCommit,
     canReject,
+    confirmingCommit,
     onRun,
     onCommit,
+    onCancelCommit,
     onReject,
 }: Props): JSX.Element => {
     const { t } = useTranslation();
@@ -56,12 +61,12 @@ export const TaskPanel = ({
                         </span>
                         <StatusBadge status={task.status} />
                     </div>
-                    <p
-                        className="text-xs font-mono truncate"
-                        style={{ color: "var(--text-secondary)" }}
-                    >
-                        {task.branchName}
-                    </p>
+                    <div className="flex items-center gap-1.5 min-w-0">
+                        <PiGitBranch size={13} style={{ color: "var(--text-muted)", flexShrink: 0 }} />
+                        <p className="text-xs font-mono truncate" style={{ color: "var(--text-secondary)" }}>
+                            {task.branchName}
+                        </p>
+                    </div>
                 </div>
 
                 <div className="flex items-center gap-2 flex-shrink-0">
@@ -74,18 +79,16 @@ export const TaskPanel = ({
                             {t("agentTask.task.runButton")}
                         </button>
                     )}
-                    {canCommit && (
+                    {canCommit && !confirmingCommit && (
                         <button
                             onClick={onCommit}
                             disabled={actionLoading}
                             className="px-3 py-1.5 text-sm font-medium rounded-md bg-green-600 text-white hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed"
                         >
-                            {actionLoading
-                                ? t("agentTask.task.committing")
-                                : t("agentTask.task.commitButton")}
+                            {t("agentTask.task.commitButton")}
                         </button>
                     )}
-                    {canReject && (
+                    {canReject && !confirmingCommit && (
                         <button
                             onClick={onReject}
                             disabled={actionLoading}
@@ -99,8 +102,42 @@ export const TaskPanel = ({
                 </div>
             </div>
 
+            {/* Commit confirmation banner */}
+            {confirmingCommit && (
+                <div
+                    className="rounded-md border px-4 py-3 space-y-2"
+                    style={{ borderColor: "var(--border)", backgroundColor: "var(--bg-subtle)" }}
+                >
+                    <p className="text-sm font-medium" style={{ color: "var(--text-primary)" }}>
+                        {t("agentTask.task.confirmCommitTitle")}
+                    </p>
+                    <p className="text-xs" style={{ color: "var(--text-muted)" }}>
+                        {t("agentTask.task.confirmCommitHint")}
+                    </p>
+                    <div className="flex items-center gap-2 pt-1">
+                        <button
+                            onClick={onCommit}
+                            disabled={actionLoading}
+                            className="px-3 py-1.5 text-sm font-medium rounded-md bg-green-600 text-white hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                            {actionLoading
+                                ? t("agentTask.task.committing")
+                                : t("agentTask.task.confirmCommitYes")}
+                        </button>
+                        <button
+                            onClick={onCancelCommit}
+                            disabled={actionLoading}
+                            className="px-3 py-1.5 text-sm font-medium rounded-md border hover:opacity-80 disabled:opacity-50 disabled:cursor-not-allowed"
+                            style={{ borderColor: "var(--border)", color: "var(--text-secondary)" }}
+                        >
+                            {t("agentTask.task.confirmCommitCancel")}
+                        </button>
+                    </div>
+                </div>
+            )}
+
             {/* Running indicator */}
-            {actionLoading && (
+            {actionLoading && !confirmingCommit && (
                 <div className="flex items-center gap-2">
                     <span className="h-2 w-2 rounded-full bg-violet-500 animate-pulse" />
                     <p className="text-xs" style={{ color: "var(--text-muted)" }}>
