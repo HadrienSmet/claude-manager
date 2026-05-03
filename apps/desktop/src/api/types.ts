@@ -34,5 +34,6 @@ export type AgentTask = {
     readonly filesWritten?: readonly string[];
     readonly commandsToRun?: readonly string[];
     readonly diff?: GitDiff;
+    readonly rawDiff?: string;
     readonly commitHash?: string;
 };

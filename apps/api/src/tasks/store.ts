@@ -17,6 +17,7 @@ export type AgentTask = {
     filesWritten?: string[];
     commandsToRun?: string[];
     diff?: GitDiff;
+    rawDiff?: string;
     commitHash?: string;
 };
 

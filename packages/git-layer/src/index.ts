@@ -155,6 +155,11 @@ export const diff = (repoPath: string): Promise<Result<GitDiff>> =>
         };
     });
 
+export const rawDiff = (repoPath: string): Promise<Result<string>> =>
+    withValidation(repoPath, async (git) => {
+        return git.diff(["HEAD"]);
+    });
+
 export const addAll = (repoPath: string): Promise<Result<void>> =>
     withValidation(repoPath, async (git) => {
         await git.add(".");

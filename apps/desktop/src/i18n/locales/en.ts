@@ -55,6 +55,7 @@ const en = {
             commandsToRun: "Commands",
             diffTitle: "Diff",
             noFiles: "No files changed",
+            noChanges: "No changes",
             runButton: "Run agent",
             running: "Running…",
             commitButton: "Commit",

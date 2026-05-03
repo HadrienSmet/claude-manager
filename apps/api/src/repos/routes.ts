@@ -1,15 +1,17 @@
 import { randomUUID } from "node:crypto";
 import { basename } from "node:path";
 import type { FastifyInstance } from "fastify";
-import { status, diff, GitLayerError } from "@claude-manager/git-layer";
+
+import { status, diff, rawDiff, GitLayerError, GIT_LAYER_ERROR_CODE } from "@claude-manager/git-layer";
 import type { Repo } from "@claude-manager/core";
+
 import type { RepoStore } from "./store.js";
 
 type PostRepoBody = { path: string };
 type RepoParams = { id: string };
 
 const gitErrorToStatus = (code: GitLayerError["code"]): number =>
-    code === "PATH_NOT_FOUND" ? 404 : 422;
+    code === GIT_LAYER_ERROR_CODE.PATH_NOT_FOUND ? 404 : 422;
 
 export const registerReposRoutes = async (
     app: FastifyInstance,
@@ -88,7 +90,11 @@ export const registerReposRoutes = async (
             return reply.status(404).send({ error: "Repository not found" });
         }
 
-        const result = await diff(repo.path);
+        const [result, rawResult] = await Promise.all([
+            diff(repo.path),
+            rawDiff(repo.path),
+        ]);
+
         if (!result.ok) {
             const e = result.error;
             if (e instanceof GitLayerError) {
@@ -99,6 +105,9 @@ export const registerReposRoutes = async (
             return reply.status(422).send({ error: "Failed to read repository diff" });
         }
 
-        return result.value;
+        return {
+            ...result.value,
+            ...(rawResult.ok ? { rawDiff: rawResult.value } : {}),
+        };
     });
 };

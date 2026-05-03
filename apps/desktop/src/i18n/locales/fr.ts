@@ -57,6 +57,7 @@ const fr: typeof en = {
             commandsToRun: "Commandes",
             diffTitle: "Diff",
             noFiles: "Aucun fichier modifié",
+            noChanges: "Aucune modification",
             runButton: "Lancer l'agent",
             running: "Exécution…",
             commitButton: "Valider",

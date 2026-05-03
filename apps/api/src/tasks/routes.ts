@@ -7,6 +7,7 @@ import {
     createAndCheckoutBranch,
     checkout,
     diff,
+    rawDiff,
     addAll,
     commit,
     GitLayerError,
@@ -132,7 +133,10 @@ export const registerTasksRoutes = async (
             });
         }
 
-        const diffResult = await diff(task.repoPath);
+        const [diffResult, rawDiffResult] = await Promise.all([
+            diff(task.repoPath),
+            rawDiff(task.repoPath),
+        ]);
 
         const updated = await taskStore.update(task.id, {
             status: TASK_STATUS.waiting_approval,
@@ -141,6 +145,7 @@ export const registerTasksRoutes = async (
             commandsToRun: [...runResult.value.commandsToRun],
             updatedAt: now(),
             ...(diffResult.ok ? { diff: diffResult.value } : {}),
+            ...(rawDiffResult.ok ? { rawDiff: rawDiffResult.value } : {}),
         });
 
         return reply.send(updated ?? task);

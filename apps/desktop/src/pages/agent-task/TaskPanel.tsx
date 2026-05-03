@@ -5,6 +5,7 @@ import type { AgentTask } from "../../api";
 import { ErrorBanner } from "../../components";
 
 import { DiffSummary } from "./DiffSummary";
+import { DiffViewer } from "./DiffViewer";
 import { StatusBadge } from "./StatusBadge";
 
 const SectionLabel = ({ children }: { readonly children: string }): JSX.Element => (
@@ -166,10 +167,12 @@ export const TaskPanel = ({
             )}
 
             {/* Diff */}
-            {task.diff !== undefined && (
+            {(task.rawDiff !== undefined || task.diff !== undefined) && (
                 <div>
                     <SectionLabel>{t("agentTask.task.diffTitle")}</SectionLabel>
-                    <DiffSummary diff={task.diff} />
+                    {task.rawDiff !== undefined
+                        ? <DiffViewer rawDiff={task.rawDiff} />
+                        : <DiffSummary diff={task.diff!} />}
                 </div>
             )}
 
