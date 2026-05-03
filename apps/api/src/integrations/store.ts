@@ -25,6 +25,8 @@ export type ProviderStatus = {
 
 export type CredentialsStore = {
     list: () => Promise<ProviderStatus[]>;
+    /** Returns the raw secret (store > env fallback). Never expose in API responses. */
+    resolve: (provider: Provider) => Promise<string | null>;
     set: (provider: Provider, secret: string) => Promise<void>;
     remove: (provider: Provider) => Promise<void>;
 };
@@ -58,6 +60,14 @@ export const createCredentialsStore = (dataFile: string = DEFAULT_CREDENTIALS_FI
                 }
                 return { provider, configured: false, source: null, updatedAt: null };
             });
+        },
+
+        resolve: async (provider) => {
+            const data = await load();
+            const stored = data.credentials[provider];
+            if (stored !== undefined) return stored.secret;
+            const envVal = process.env[ENV_VARS[provider]];
+            return envVal !== undefined && envVal.length > 0 ? envVal : null;
         },
 
         set: async (provider, secret) => {

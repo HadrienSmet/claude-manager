@@ -13,12 +13,14 @@ import { registerTasksRoutes } from "./tasks/routes.js";
 import { createProvider } from "./tasks/provider.js";
 import { createCredentialsStore, DEFAULT_CREDENTIALS_FILE } from "./integrations/store.js";
 import { registerIntegrationsRoutes } from "./integrations/routes.js";
+import { createProviderTester, type Fetcher } from "./integrations/tester.js";
 
 export const buildServer = async (
     dataDir = join(process.cwd(), "data"),
     provider?: AgentProvider,
     settings?: PublicSettings,
     credentialsFile?: string,
+    testFetcher?: Fetcher,
 ) => {
     const app = Fastify({ logger: true });
 
@@ -37,7 +39,8 @@ export const buildServer = async (
     await registerSettingsRoutes(app, settings ?? readPublicSettings());
 
     const credStore = createCredentialsStore(credentialsFile ?? DEFAULT_CREDENTIALS_FILE);
-    await registerIntegrationsRoutes(app, credStore);
+    const tester = createProviderTester(testFetcher ? { fetcher: testFetcher } : undefined);
+    await registerIntegrationsRoutes(app, credStore, tester);
 
     return app;
 };
